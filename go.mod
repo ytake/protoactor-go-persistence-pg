@@ -1,4 +1,4 @@
-module github.com/ytake/protoactor-go-persistence-pg
+module github.com/ytake/protoactor-go-persistence-pg/persistencepg
 
 go 1.21.6
 
