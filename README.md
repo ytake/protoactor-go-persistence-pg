@@ -17,6 +17,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/ytake/protoactor-go-persistence-pg"
 )
 
 type Actor struct {
@@ -34,7 +35,7 @@ func main() {
 	system := actor.NewActorSystem()
 	ctx := context.Background()
 	conn, _ := pgxpool.NewWithConfig(ctx, conf)
-	provider, _ := persistencepg.New(3, persistencepg.NewTable(), conn, system.Logger())
+	provider, _ := persistencepg.New(ctx, 3, persistencepg.NewTable(), conn, system.Logger())
 
 	props := actor.PropsFromProducer(func() actor.Actor { return &Actor{} },
 		actor.WithReceiverMiddleware(persistence.Using(provider)))
