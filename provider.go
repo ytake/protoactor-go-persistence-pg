@@ -69,7 +69,7 @@ func (provider *Provider) GetEvents(actorName string, eventIndexStart int, event
 			provider.tableSchema.SequenceNumber(),
 			provider.tableSchema.SequenceNumber(),
 		),
-		actorName, eventIndexStart, eventIndexEnd)
+		actorName, eventIndexEnd, eventIndexStart)
 	if !errors.Is(err, sql.ErrNoRows) && err != nil {
 		provider.logger.Error(err.Error(), slog.String("actor_name", actorName))
 		return
