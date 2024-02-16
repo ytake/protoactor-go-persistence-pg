@@ -56,20 +56,32 @@ func (provider *Provider) selectColumns() string {
 	}, ",")
 }
 
+// GetEvents retrieves events from the provider
+// eventIndexEnd 0 means max
+// see https://github.com/asynkron/protoactor-go/blob/dev/persistence/plugin.go#L65
 func (provider *Provider) GetEvents(actorName string, eventIndexStart int, eventIndexEnd int, callback func(e interface{})) {
 	tx, _ := provider.db.BeginTx(provider.context, pgx.TxOptions{IsoLevel: pgx.Serializable})
 	defer tx.Commit(provider.context)
-	rows, err := tx.Query(
-		provider.context,
-		fmt.Sprintf(
-			"SELECT %s FROM %s WHERE %s = $1 AND %s BETWEEN $2 AND $3 ORDER BY %s ASC",
+	query := fmt.Sprintf(
+		"SELECT %s FROM %s WHERE %s = $1 AND %s BETWEEN $2 AND $3 ORDER BY %s ASC",
+		provider.selectColumns(),
+		provider.tableSchema.JournalTableName(),
+		provider.tableSchema.ActorName(),
+		provider.tableSchema.SequenceNumber(),
+		provider.tableSchema.SequenceNumber(),
+	)
+	args := []interface{}{actorName, eventIndexStart, eventIndexEnd}
+	if eventIndexEnd == 0 {
+		query = fmt.Sprintf(
+			"SELECT %s FROM %s WHERE %s = $1 AND %s >= $2 ORDER BY %s ASC",
 			provider.selectColumns(),
 			provider.tableSchema.JournalTableName(),
 			provider.tableSchema.ActorName(),
 			provider.tableSchema.SequenceNumber(),
-			provider.tableSchema.SequenceNumber(),
-		),
-		actorName, eventIndexStart, eventIndexEnd)
+			provider.tableSchema.SequenceNumber())
+		args = []interface{}{actorName, eventIndexStart}
+	}
+	rows, err := tx.Query(provider.context, query, args...)
 	if !errors.Is(err, sql.ErrNoRows) && err != nil {
 		provider.logger.Error(err.Error(), slog.String("actor_name", actorName))
 		return

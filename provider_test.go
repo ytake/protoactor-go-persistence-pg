@@ -46,6 +46,18 @@ func TestProvider_PersistEvent(t *testing.T) {
 	if !reflect.DeepEqual(evt, evv) {
 		t.Errorf("unexpected event %v", evv)
 	}
+
+	var evv2 *testdata.UserCreated
+	provider.GetEvents("user", 1, 0, func(e interface{}) {
+		ev, ok := e.(*testdata.UserCreated)
+		if !ok {
+			t.Error("unexpected type")
+		}
+		evv2 = ev
+	})
+	if !reflect.DeepEqual(evt, evv2) {
+		t.Errorf("unexpected event %v", evv2)
+	}
 }
 
 func TestProvider_PersistSnapshot(t *testing.T) {
