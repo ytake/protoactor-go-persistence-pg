@@ -36,7 +36,7 @@ func TestProvider_PersistEvent(t *testing.T) {
 	}
 	provider.PersistEvent("user", 1, evt)
 	var evv *testdata.UserCreated
-	provider.GetEvents("user", 1, 1, func(e interface{}) {
+	provider.GetEvents("user", 1, 4, func(e interface{}) {
 		ev, ok := e.(*testdata.UserCreated)
 		if !ok {
 			t.Error("unexpected type")
