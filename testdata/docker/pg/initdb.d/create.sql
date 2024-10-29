@@ -4,7 +4,7 @@ CREATE DATABASE sample;
 CREATE TABLE journals
 (
     id              VARCHAR(26) NOT NULL,
-    payload         JSONB NOT NULL,
+    payload         BYTEA NOT NULL,
     sequence_number BIGINT,
     actor_name      VARCHAR(255),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE journals
 CREATE TABLE snapshots
 (
     id              VARCHAR(26) NOT NULL,
-    payload         JSONB NOT NULL,
+    payload         BYTEA NOT NULL,
     sequence_number BIGINT,
     actor_name      VARCHAR(255),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
