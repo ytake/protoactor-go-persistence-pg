@@ -90,7 +90,7 @@ func (d *DefaultSchema) CreateTable() []string {
 	for _, table := range tables {
 		createTables = append(createTables, "CREATE TABLE "+table+" ("+
 			d.ID()+" VARCHAR(26) NOT NULL,"+
-			d.Payload()+" JSONB NOT NULL,"+
+			d.Payload()+" BYTEA NOT NULL,"+
 			d.SequenceNumber()+" BIGINT,"+
 			d.ActorName()+" VARCHAR(255),"+
 			d.Created()+" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,"+
